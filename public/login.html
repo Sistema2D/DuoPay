@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DuoPay</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --text-primary: #2c3e50;
+            --text-secondary: #6c757d;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #357abd 100%);
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+        }
+
+        .brand-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .brand-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-floating .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-floating .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+            background: white;
+        }
+
+        .form-floating label {
+            color: var(--text-secondary);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #357abd 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+            background: linear-gradient(135deg, #357abd 0%, #2968a3 100%);
+        }
+
+        .btn-login:disabled {
+            background: #6c757d;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #721c24;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .loading-spinner {
+            display: none;
+        }
+
+        .loading .loading-spinner {
+            display: inline-block;
+        }
+
+        .loading .btn-text {
+            display: none;
+        }
+
+        .security-info {
+            background: rgba(23, 162, 184, 0.1);
+            border: 1px solid rgba(23, 162, 184, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #0c5460;
+        }
+
+        .security-info i {
+            color: var(--info-color);
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="brand-header">
+            <div class="brand-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h1 class="brand-title">DuoPay</h1>
+            <p class="brand-subtitle">Gestão Financeira Familiar</p>
+        </div>
+
+        <form id="login-form">
+            <div id="alert-container"></div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="username" name="username" placeholder="Usuário" required autocomplete="username">
+                <label for="username">
+                    <i class="fas fa-user me-2"></i>Usuário
+                </label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Senha" required autocomplete="current-password">
+                <label for="password">
+                    <i class="fas fa-lock me-2"></i>Senha
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-login btn-primary w-100">
+                <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                <span class="btn-text">
+                    <i class="fas fa-sign-in-alt me-2"></i>Entrar
+                </span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const API_AUTH_URL = '/api/auth.php';
+
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const username = formData.get('username').trim();
+            const password = formData.get('password');
+            
+            if (!username || !password) {
+                showAlert('Por favor, preencha todos os campos.', 'danger');
+                return;
+            }
+            
+            setLoading(true);
+            clearAlert();
+            
+            try {
+                const response = await fetch(API_AUTH_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store session info
+                    localStorage.setItem('user_logged_in', 'true');
+                    localStorage.setItem('username', data.data.username);
+                    localStorage.setItem('login_time', data.data.login_time);
+                    
+                    showAlert('Login realizado com sucesso! Redirecionando...', 'success');
+                    
+                    // Redirect to main app
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    showAlert(data.message || 'Erro ao fazer login', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                showAlert('Erro de conexão. Tente novamente.', 'danger');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        function setLoading(loading) {
+            const form = document.getElementById('login-form');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            if (loading) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('loading');
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+            }
+        }
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            
+            container.innerHTML = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+
+        function clearAlert() {
+            document.getElementById('alert-container').innerHTML = '';
+        }
+
+        // Check if already logged in
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('user_logged_in') === 'true') {
+                // Verify session with server
+                fetch(API_AUTH_URL, {
+                    method: 'GET'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = 'index.html';
+                    } else {
+                        localStorage.removeItem('user_logged_in');
+                        localStorage.removeItem('username');
+                        localStorage.removeItem('login_time');
+                    }
+                })
+                .catch(error => {
+                    console.log('Session check failed:', error);
+                    localStorage.removeItem('user_logged_in');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('login_time');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

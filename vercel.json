@@ -1,0 +1,39 @@
+{
+  "functions": {
+    "api/api.php": {
+      "runtime": "vercel-php@0.7.0"
+    },
+    "api/auth.php": {
+      "runtime": "vercel-php@0.7.0"
+    },
+    "api/users_api.php": {
+      "runtime": "vercel-php@0.7.0"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/api.php",
+      "dest": "/api/api.php"
+    },
+    {
+      "src": "/api/auth.php",
+      "dest": "/api/auth.php"
+    },
+    {
+      "src": "/api/users_api.php",
+      "dest": "/api/users_api.php"
+    },
+    {
+      "src": "/login",
+      "dest": "/public/login.html"
+    },
+    {
+      "src": "/",
+      "dest": "/public/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ]
+}

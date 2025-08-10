@@ -1,0 +1,24 @@
+{
+  "name": "duopay",
+  "version": "1.0.0",
+  "description": "DuoPay - Sistema de Gestão Financeira Pessoal",
+  "main": "public/index.html",
+  "scripts": {
+    "dev": "php -S localhost:8000 -t public",
+    "build": "echo 'Build completed - static files ready'",
+    "start": "echo 'Production ready'"
+  },
+  "keywords": [
+    "finance",
+    "money",
+    "budget",
+    "expenses",
+    "php",
+    "mysql"
+  ],
+  "author": "DuoPay Team",
+  "license": "MIT",
+  "engines": {
+    "php": ">=8.0"
+  }
+}

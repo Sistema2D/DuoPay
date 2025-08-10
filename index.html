@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DuoPay</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Main Header - Simplified -->
+        <header class="main-header mb-3">
+            <div class="header-content">
+                <div class="brand-wrapper">
+                    <div class="brand-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h1 class="brand-title">
+                        DuoPay
+                    </h1>
+                </div>
+                <!-- Header Buttons -->
+                <div class="header-buttons">
+                    <!-- Theme Toggle in Header -->
+                    <button id="theme-toggle" class="btn btn-outline-primary theme-toggle-btn header-theme-btn" title="Alternar Tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Subheader with Controls -->
+        <div class="subheader mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-start ps-2">
+                    <!-- User info -->
+                    <div class="user-info">
+                        <span class="text-muted small">Bem-vindo,</span>
+                        <span id="username-display" class="fw-bold text-primary">Usuário</span>
+                    </div>
+                </div>
+                <div class="col-md-6 text-end pe-2">
+                    <div class="subheader-controls">
+                        <!-- Admin Panel Button (only for admins) -->
+                        <button id="admin-panel-btn" class="btn btn-outline-warning me-2 d-none" title="Painel de Administração">
+                            <i class="fas fa-users-cog"></i>
+                        </button>
+                        
+                        <!-- Logout Button -->
+                        <button id="logout-btn" class="btn btn-outline-danger" title="Sair">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="mb-4">
+            <ul class="nav nav-pills nav-fill justify-content-center flex-column flex-md-row">
+                <li class="nav-item mb-2 mb-md-0">
+                    <button class="nav-link active w-100" id="dashboard-tab" onclick="showTab('dashboard')">
+                        <i class="fas fa-chart-bar me-2"></i> Painel
+                    </button>
+                </li>
+                <li class="nav-item mb-2 mb-md-0">
+                    <button class="nav-link w-100" id="transactions-tab" onclick="showTab('transactions')">
+                        <i class="fas fa-plus-circle me-2"></i> Transações
+                    </button>
+                </li>
+                <li class="nav-item mb-2 mb-md-0">
+                    <button class="nav-link w-100" id="evolution-tab" onclick="showTab('evolution')">
+                        <i class="fas fa-chart-line me-2"></i> Evolução
+                    </button>
+                </li>
+                <li class="nav-item mb-2 mb-md-0">
+                    <button class="nav-link w-100" id="history-tab" onclick="showTab('history')">
+                        <i class="fas fa-history me-2"></i> Histórico
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content">
+            <!-- Monthly Summary Cards -->
+            <div class="dashboard-grid">
+                <div class="card card-hover">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-trending-up text-success me-2"></i>
+                                <h6 class="card-title text-success mb-0">Receitas</h6>
+                            </div>
+                            <h3 class="mb-0 fw-bold text-success" id="monthly-income">R$ 0,00</h3>
+                            <small class="text-muted">Este mês</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-hover">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-trending-down text-danger me-2"></i>
+                                <h6 class="card-title text-danger mb-0">Despesas</h6>
+                            </div>
+                            <h3 class="mb-0 fw-bold text-danger" id="monthly-expense">R$ 0,00</h3>
+                            <small class="text-muted">Este mês</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-hover">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <h6 class="card-title text-warning mb-0">Pendentes</h6>
+                            </div>
+                            <h3 class="mb-0 fw-bold text-warning" id="monthly-pending">R$ 0,00</h3>
+                            <small class="text-muted">A pagar</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-hover">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-wallet text-primary me-2"></i>
+                                <h6 class="card-title text-primary mb-0">Saldo</h6>
+                            </div>
+                            <h3 class="mb-0 fw-bold text-primary" id="monthly-balance">R$ 0,00</h3>
+                            <small class="text-muted">Mensal</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts -->
+            <div id="alerts-container" class="mb-4"></div>
+
+            <!-- Monthly Bills -->
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    <h5 class="mb-0">Contas do Mês - <span id="current-month"></span></h5>
+                </div>
+                <div class="card-body">
+                    <div id="monthly-bills" class="bills-grid">
+                        <div class="text-center text-muted py-4 w-100">
+                            <i class="fas fa-check-circle fa-3x mb-3"></i>
+                            <p class="mb-0">Nenhuma conta pendente para este mês! 🎉</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactions" class="tab-content d-none">
+            <div class="transactions-grid">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2 text-primary"></i>Transações Recentes
+                        </h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#newTransactionModal">
+                                <i class="fas fa-plus-circle me-1"></i>Nova Transação
+                            </button>
+                            <span class="badge bg-primary" id="transactions-count">0</span>
+                        </div>
+                    </div>
+                    <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                        <div id="transactions-list" class="transactions-list">
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-inbox fa-3x mb-3 text-info"></i>
+                                <p class="mb-0">Nenhuma transação registrada ainda.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Evolution Tab -->
+        <div id="evolution" class="tab-content d-none">
+            <div class="evolution-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line me-2 text-primary"></i>Evolução Mensal
+                        </h5>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Dados futuros são <strong>projeções</strong> baseadas em transações já cadastradas e podem sofrer alterações
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="evolutionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex flex-column gap-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-trending-up me-2 text-info"></i>Tendências
+                            </h6>
+                        </div>
+                        <div class="card-body" id="evolution-trends">
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-chart-area fa-2x mb-2 text-info"></i>
+                                <p class="mb-0">Carregando análise de tendências...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-calculator me-2 text-success"></i>Estatísticas
+                            </h6>
+                        </div>
+                        <div class="card-body" id="evolution-stats">
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-calculator fa-2x mb-2 text-success"></i>
+                                <p class="mb-0">Carregando estatísticas...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="history" class="tab-content d-none">
+            <div class="row mb-4">
+                <!-- Filtros -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-filter me-2 text-primary"></i>Filtros do Histórico
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="history-year" class="form-label">
+                                        <i class="fas fa-calendar-alt me-1"></i>Ano
+                                    </label>
+                                    <select id="history-year" class="form-select" onchange="loadHistoryData()">
+                                        <!-- Será preenchido dinamicamente -->
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="history-month" class="form-label">
+                                        <i class="fas fa-calendar me-1"></i>Mês
+                                    </label>
+                                    <select id="history-month" class="form-select" onchange="loadHistoryData()">
+                                        <option value="1">Janeiro</option>
+                                        <option value="2">Fevereiro</option>
+                                        <option value="3">Março</option>
+                                        <option value="4">Abril</option>
+                                        <option value="5">Maio</option>
+                                        <option value="6">Junho</option>
+                                        <option value="7">Julho</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Setembro</option>
+                                        <option value="10">Outubro</option>
+                                        <option value="11">Novembro</option>
+                                        <option value="12">Dezembro</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Gráfico de Linhas -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-chart-bar me-2 text-success"></i>Receitas vs Despesas
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="history-line-chart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabela de Transações -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">
+                                <i class="fas fa-list me-2 text-info"></i>Transações do Mês
+                            </h6>
+                            <span class="badge bg-primary" id="history-count">0 transações</span>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light sticky-top">
+                                        <tr>
+                                            <th scope="col">Tipo</th>
+                                            <th scope="col">Categoria</th>
+                                            <th scope="col">Descrição</th>
+                                            <th scope="col">Valor</th>
+                                            <th scope="col">Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history-table-body">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-4">
+                                                <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                                                Selecione um ano e mês para visualizar as transações
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resumo Financeiro -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-calculator me-2 text-warning"></i>Resumo Financeiro do Período
+                            </h6>
+                        </div>
+                        <div class="card-body" id="history-summary">
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <div class="p-3 border rounded bg-light">
+                                        <i class="fas fa-arrow-up text-success fa-2x mb-2"></i>
+                                        <h5 class="text-success mb-1" id="total-income">R$ 0,00</h5>
+                                        <small class="text-muted">Total de Receitas</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3 border rounded bg-light">
+                                        <i class="fas fa-arrow-down text-danger fa-2x mb-2"></i>
+                                        <h5 class="text-danger mb-1" id="total-expense">R$ 0,00</h5>
+                                        <small class="text-muted">Total de Despesas</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3 border rounded bg-light">
+                                        <i class="fas fa-balance-scale text-primary fa-2x mb-2"></i>
+                                        <h5 class="text-primary mb-1" id="balance">R$ 0,00</h5>
+                                        <small class="text-muted">Saldo do Período</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3 border rounded bg-light">
+                                        <i class="fas fa-list-alt text-info fa-2x mb-2"></i>
+                                        <h5 class="text-info mb-1" id="transaction-count">0</h5>
+                                        <small class="text-muted">Total de Transações</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management Modal (Admin Only) -->
+    <div class="modal fade" id="userManagementModal" tabindex="-1" aria-labelledby="userManagementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userManagementModalLabel">
+                        <i class="fas fa-users-cog me-2 text-warning"></i>Gerenciamento de Usuários
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add User Form -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-user-plus me-2 text-success"></i>Adicionar Novo Usuário
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="add-user-form">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="new-username" class="form-label">Nome de Usuário</label>
+                                        <input type="text" class="form-control" id="new-username" name="username" required 
+                                               placeholder="Digite o nome de usuário" minlength="3" maxlength="50">
+                                        <div class="form-text">Mínimo 3 caracteres. Apenas letras, números, . _ e -</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="new-password" class="form-label">Senha</label>
+                                        <input type="password" class="form-control" id="new-password" name="password" required 
+                                               placeholder="Digite a senha" minlength="4">
+                                        <div class="form-text">Mínimo 4 caracteres</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Tipo</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="new-is-admin" name="is_admin">
+                                            <label class="form-check-label" for="new-is-admin">
+                                                Administrador
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">&nbsp;</label>
+                                        <div>
+                                            <button type="submit" class="btn btn-success w-100">
+                                                <i class="fas fa-plus me-1"></i>Adicionar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Users List -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-list me-2 text-info"></i>Lista de Usuários
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Usuário</th>
+                                            <th>Tipo</th>
+                                            <th>Status</th>
+                                            <th>Criado em</th>
+                                            <th>Última Atividade</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-table-body">
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted py-3">
+                                                <i class="fas fa-spinner fa-spin me-2"></i>Carregando usuários...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Fechar
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="resetUserForm()" title="Cancelar edição e voltar ao modo de adição">
+                        <i class="fas fa-undo me-1"></i>Cancelar Edição
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="loadUsers()">
+                        <i class="fas fa-sync-alt me-1"></i>Atualizar Lista
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2 text-warning"></i>Confirmação
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmationMessage" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmButton">
+                        <i class="fas fa-check me-1"></i>Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLabel">
+                        <i id="alertIcon" class="fas fa-info-circle me-2 text-info"></i>
+                        <span id="alertTitle">Informação</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="alertMessage" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        <i class="fas fa-check me-1"></i>OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Expired Modal -->
+    <div class="modal fade" id="sessionExpiredModal" tabindex="-1" aria-labelledby="sessionExpiredModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sessionExpiredModalLabel">
+                        <i class="fas fa-clock me-2 text-warning"></i>Sessão Expirada
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Sua sessão expirou. Deseja fazer login novamente?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="sessionExpiredLogout">
+                        <i class="fas fa-sign-out-alt me-1"></i>Sair
+                    </button>
+                    <button type="button" class="btn btn-primary" id="sessionExpiredLogin">
+                        <i class="fas fa-sign-in-alt me-1"></i>Fazer Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Transaction Modal -->
+    <div class="modal fade" id="newTransactionModal" tabindex="-1" aria-labelledby="newTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newTransactionModalLabel">
+                        <i class="fas fa-plus-circle me-2 text-primary"></i>Nova Transação
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="transaction-form">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label for="type" class="form-label">Tipo</label>
+                                <select id="type" name="type" class="form-select" onchange="updateCategoriesAndSuggestions()">
+                                    <option value="income">Receita</option>
+                                    <option value="expense">Despesa</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="category" class="form-label">Categoria</label>
+                                <select id="category" name="category" class="form-select" required>
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="description" class="form-label">Descrição</label>
+                                <textarea id="description" name="description" class="form-control" rows="2" required maxlength="255"
+                                         placeholder="Ex: Salário mensal, Compras no supermercado..."></textarea>
+                                <div class="suggestions" id="suggestions"></div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="amount" class="form-label">Valor</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" required placeholder="0,00">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="payment-date" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Data
+                                </label>
+                                <input type="date" id="payment-date" name="payment_date" class="form-control">
+                            </div>
+
+                            <div class="col-12" id="paid-group" style="display: none;">
+                                <div class="form-check">
+                                    <input type="checkbox" id="is-paid" name="is_paid" class="form-check-input">
+                                    <label class="form-check-label" for="is-paid">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        Já foi pago
+                                    </label>
+                                    <small class="form-text text-muted d-block">
+                                        Marque se esta despesa já foi quitada
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
+                    <button type="submit" form="transaction-form" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-1"></i>Adicionar Transação
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background: rgba(0,0,0,0.5); z-index: 9999;">
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Authentication Script -->
+    <script>
+        // Authentication variables
+        const API_AUTH_URL = 'auth.php';
+
+        // Check authentication on page load
+        window.addEventListener('load', async function() {
+            if (!await checkAuthentication()) {
+                redirectToLogin();
+                return;
+            }
+            
+            // Display username
+            const username = localStorage.getItem('username');
+            if (username) {
+                document.getElementById('username-display').textContent = username;
+            }
+            
+            // Check if user is admin and show admin panel
+            await checkAdminStatus();
+        });
+
+        async function checkAuthentication() {
+            try {
+                const response = await fetch(API_AUTH_URL, {
+                    method: 'GET'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('user_logged_in', 'true');
+                    return true;
+                } else {
+                    clearAuthData();
+                    return false;
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                clearAuthData();
+                return false;
+            }
+        }
+
+        async function logout(reason = 'Logout manual') {
+            try {
+                const response = await fetch(API_AUTH_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'logout'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Logout response:', data);
+            } catch (error) {
+                console.error('Logout error:', error);
+            } finally {
+                clearSessionMonitoring();
+                clearAuthData();
+                
+                if (reason !== 'Logout manual') {
+                    showAlertModal(reason, 'warning');
+                }
+                
+                redirectToLogin();
+            }
+        }
+
+        function clearAuthData() {
+            localStorage.removeItem('user_logged_in');
+            localStorage.removeItem('username');
+            localStorage.removeItem('login_time');
+        }
+
+        function clearSessionMonitoring() {
+            // Function kept for compatibility but no longer needed
+        }
+
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+
+        function showSessionExpiredAlert() {
+            showSessionExpiredModal();
+        }
+
+        function showAlert(message, type = 'info') {
+            // Create alert container if it doesn't exist
+            let alertContainer = document.getElementById('alert-container');
+            if (!alertContainer) {
+                alertContainer = document.createElement('div');
+                alertContainer.id = 'alert-container';
+                alertContainer.className = 'position-fixed top-0 start-50 translate-middle-x';
+                alertContainer.style.zIndex = '9999';
+                alertContainer.style.marginTop = '20px';
+                document.body.appendChild(alertContainer);
+            }
+
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'danger' ? 'alert-danger' : 
+                              type === 'warning' ? 'alert-warning' : 'alert-info';
+            
+            const iconClass = type === 'success' ? 'check-circle' : 
+                             type === 'danger' ? 'exclamation-triangle' : 
+                             type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-${iconClass} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                const alert = alertContainer.querySelector('.alert');
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 5000);
+        }
+
+        // Custom Modal Functions
+        function showConfirmModal(message, onConfirm, onCancel = null) {
+            return new Promise((resolve) => {
+                const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                const confirmButton = document.getElementById('confirmButton');
+                const messageElement = document.getElementById('confirmationMessage');
+                
+                messageElement.textContent = message;
+                
+                // Remove any existing event listeners
+                confirmButton.replaceWith(confirmButton.cloneNode(true));
+                const newConfirmButton = document.getElementById('confirmButton');
+                
+                // Add new event listener
+                newConfirmButton.addEventListener('click', () => {
+                    modal.hide();
+                    if (onConfirm) onConfirm();
+                    resolve(true);
+                });
+                
+                // Handle modal close (cancel)
+                document.getElementById('confirmationModal').addEventListener('hidden.bs.modal', () => {
+                    if (onCancel) onCancel();
+                    resolve(false);
+                }, { once: true });
+                
+                modal.show();
+            });
+        }
+
+        function showAlertModal(message, type = 'info', title = null) {
+            return new Promise((resolve) => {
+                const modal = new bootstrap.Modal(document.getElementById('alertModal'));
+                const messageElement = document.getElementById('alertMessage');
+                const titleElement = document.getElementById('alertTitle');
+                const iconElement = document.getElementById('alertIcon');
+                
+                messageElement.textContent = message;
+                
+                // Set title and icon based on type
+                const config = {
+                    'success': { title: 'Sucesso', icon: 'fas fa-check-circle text-success' },
+                    'error': { title: 'Erro', icon: 'fas fa-exclamation-circle text-danger' },
+                    'danger': { title: 'Erro', icon: 'fas fa-exclamation-circle text-danger' },
+                    'warning': { title: 'Atenção', icon: 'fas fa-exclamation-triangle text-warning' },
+                    'info': { title: 'Informação', icon: 'fas fa-info-circle text-info' }
+                };
+                
+                const typeConfig = config[type] || config['info'];
+                titleElement.textContent = title || typeConfig.title;
+                iconElement.className = typeConfig.icon + ' me-2';
+                
+                // Handle modal close
+                document.getElementById('alertModal').addEventListener('hidden.bs.modal', () => {
+                    resolve();
+                }, { once: true });
+                
+                modal.show();
+            });
+        }
+
+        function showSessionExpiredModal() {
+            const modal = new bootstrap.Modal(document.getElementById('sessionExpiredModal'));
+            
+            document.getElementById('sessionExpiredLogin').addEventListener('click', () => {
+                modal.hide();
+                redirectToLogin();
+            }, { once: true });
+            
+            document.getElementById('sessionExpiredLogout').addEventListener('click', () => {
+                modal.hide();
+                logout('Sessão expirada');
+            }, { once: true });
+            
+            modal.show();
+        }
+
+        // Admin functions
+        async function checkAdminStatus() {
+            console.log('Checking admin status...');
+            try {
+                const response = await fetch(API_AUTH_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'check_admin'
+                    })
+                });
+
+                const data = await response.json();
+                console.log('Admin check response:', data);
+                
+                if (data.success && data.is_admin) {
+                    const adminBtn = document.getElementById('admin-panel-btn');
+                    console.log('User is admin, showing button');
+                    adminBtn.style.display = 'block';
+                    adminBtn.classList.remove('d-none');
+                } else {
+                    console.log('User is not admin or check failed');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar status de admin:', error);
+            }
+        }
+
+        // User Management Functions
+        async function loadUsers() {
+            console.log('Loading users...');
+            try {
+                const response = await fetch('users_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'list_users'
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success && data.users && Array.isArray(data.users)) {
+                    const tbody = document.getElementById('users-table-body');
+                    tbody.innerHTML = '';
+
+                    if (data.users.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-3">
+                                    <i class="fas fa-users me-2"></i>Nenhum usuário encontrado
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    data.users.forEach(user => {
+                        const row = document.createElement('tr');
+                        
+                        // Format dates safely
+                        const createdDate = user.created_at ? 
+                            new Date(user.created_at).toLocaleDateString('pt-BR') : '-';
+                        const lastActivity = user.last_activity ? 
+                            new Date(user.last_activity).toLocaleString('pt-BR') : 'Nunca';
+                        const userStatus = user.is_active ? 'Ativo' : 'Inativo';
+                        const adminStatus = user.is_admin ? 'Admin' : 'Usuário';
+                        
+                        row.innerHTML = `
+                            <td>${user.id}</td>
+                            <td><strong>${user.username}</strong></td>
+                            <td><span class="badge ${user.is_admin ? 'bg-warning text-dark' : 'bg-secondary'}">${adminStatus}</span></td>
+                            <td><span class="badge ${user.is_active ? 'bg-success' : 'bg-danger'}">${userStatus}</span></td>
+                            <td>${createdDate}</td>
+                            <td>${lastActivity}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editUser(${user.id}, '${user.username}', ${user.is_admin})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id}, '${user.username}')" title="Excluir">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    showAlert('Erro ao carregar usuários: ' + (data.message || 'Erro desconhecido'), 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+                showAlert('Erro ao carregar usuários', 'danger');
+            }
+        }
+
+        function editUser(id, username, isAdmin) {
+            // Fill the add user form with edit data
+            document.getElementById('new-username').value = username;
+            document.getElementById('new-password').value = ''; // Keep password empty for editing
+            document.getElementById('new-is-admin').checked = isAdmin;
+            
+            // Change form mode to edit
+            const form = document.getElementById('add-user-form');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Atualizar';
+            submitBtn.className = 'btn btn-warning w-100';
+            
+            // Store user ID for update
+            form.setAttribute('data-edit-id', id);
+            
+            // Update card header
+            const cardHeader = form.closest('.card').querySelector('.card-header h6');
+            cardHeader.innerHTML = '<i class="fas fa-user-edit me-2 text-warning"></i>Editar Usuário';
+        }
+
+        async function deleteUser(id, username) {
+            console.log('Current session user ID:', localStorage.getItem('user_id') || 'not stored in localStorage');
+            console.log('Attempting to delete user ID:', id, 'username:', username);
+            
+            const confirmed = await showConfirmModal(`Deseja realmente excluir o usuário "${username}"?`);
+            if (confirmed) {
+                console.log('Deleting user with ID:', id);
+                try {
+                    const response = await fetch('users_api.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'delete_user',
+                            user_id: id
+                        })
+                    });
+
+                    console.log('Delete response status:', response.status);
+                    const responseText = await response.text();
+                    console.log('Delete raw response:', responseText);
+                    
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (parseError) {
+                        console.error('Delete JSON parse error:', parseError);
+                        showAlertModal('Erro: Resposta inválida do servidor', 'error');
+                        return;
+                    }
+
+                    if (data.success) {
+                        showAlertModal('Usuário excluído com sucesso!', 'success');
+                        loadUsers();
+                    } else {
+                        showAlertModal('Erro ao excluir usuário: ' + (data.message || data.error || 'Erro desconhecido'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir usuário:', error);
+                    showAlert('Erro ao excluir usuário', 'danger');
+                }
+            }
+        }
+
+        function resetUserForm() {
+            const form = document.getElementById('add-user-form');
+            form.reset();
+            form.removeAttribute('data-edit-id');
+            
+            // Reset button to add mode
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-plus me-1"></i>Adicionar';
+            submitBtn.className = 'btn btn-success w-100';
+            
+            // Reset card header
+            const cardHeader = form.closest('.card').querySelector('.card-header h6');
+            cardHeader.innerHTML = '<i class="fas fa-user-plus me-2 text-success"></i>Adicionar Novo Usuário';
+        }
+
+        // Add User Form Event Handler
+        document.getElementById('add-user-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const editId = e.target.getAttribute('data-edit-id');
+            
+            const userData = {
+                action: editId ? 'update_user' : 'create_user',
+                username: formData.get('username'),
+                is_admin: formData.get('is_admin') === 'on'
+            };
+
+            if (editId) {
+                userData.user_id = editId;
+            }
+
+            if (formData.get('password')) {
+                userData.password = formData.get('password');
+            }
+
+            console.log('Sending user data:', userData);
+
+            try {
+                const response = await fetch('users_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const responseText = await response.text();
+                console.log('Raw response:', responseText);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    showAlert('Erro: Resposta inválida do servidor', 'danger');
+                    return;
+                }
+
+                if (data.success) {
+                    showAlertModal(editId ? 'Usuário atualizado com sucesso!' : 'Usuário criado com sucesso!', 'success');
+                    resetUserForm();
+                    loadUsers();
+                } else {
+                    showAlertModal('Erro: ' + (data.message || 'Erro desconhecido'), 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar usuário:', error);
+                showAlert('Erro ao salvar usuário', 'danger');
+            }
+        });
+
+        // Admin panel button event
+        document.getElementById('admin-panel-btn').addEventListener('click', () => {
+            loadUsers();
+            const modal = new bootstrap.Modal(document.getElementById('userManagementModal'));
+            modal.show();
+        });
+
+        // Logout button event
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            const confirmed = await showConfirmModal('Deseja realmente sair?');
+            if (confirmed) {
+                logout();
+            }
+        });
+
+        // Prevent back button after logout
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted && !localStorage.getItem('user_logged_in')) {
+                redirectToLogin();
+            }
+        });
+    </script>
+    
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>
